@@ -66,7 +66,7 @@ for runs in np.arange(0,20):
             run_error = run_error + np.mean(err ** 2)
             r_slice = Rates[:, t] # Rates of learning neurons at time t
             k = PJ @ r_slice
-            rPr = (r_slice @ k)
+            rPr = r_slice @ k
             c = 1.0/(1.0 + rPr)
             PJ = PJ - c*(np.outer(k, k)) # P(t) = P(t-1) - ...
             #ijs = np.dstack([ijs, ij]) # Save IJ Matrix before updating
