@@ -13,12 +13,15 @@ P0 = 1.0
 
 # Target functions
 targets = np.zeros([N, len(time)])
+period = tau * 75.0
+omega = 2.0 * math.pi / period
+phi_m = 2.0 * math.pi
 for i in range(N):
-    targets[i,:] = (np.sin(time + 10*rd.random(1))+
-                    np.sin(0.4*time + 10*rd.random(1)) +
-                    np.sin(0.8*time + 10*rd.random(1)) +
-                    np.sin(1.2*time + 10*rd.random(1)) +
-                    np.sin(1.6*time + 10*rd.random(1)))
+    targets[i,:] = (np.sin(time * omega / 4.0 + phi_m * rd.random(1))+
+                    np.sin(time * omega / 3.0 + phi_m * rd.random(1)) +
+                    np.sin(time * omega / 2.5 + phi_m * rd.random(1)) +
+                    np.sin(time * omega / 2.0 + phi_m * rd.random(1)) +
+                    np.sin(time * omega + phi_m * rd.random(1)))
 # Plots network currents
 plt.subplots(figsize = (17,5))
 plt.subplot(2,1,1)
