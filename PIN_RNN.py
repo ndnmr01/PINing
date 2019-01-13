@@ -8,7 +8,7 @@ N = 300
 g = 1.5 
 dt = 0.01
 time = np.arange(0,100,dt)
-tau = 1.0
+tau = 0.1
 P0 = 1.0
 
 # Target functions
