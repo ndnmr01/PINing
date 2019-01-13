@@ -8,11 +8,11 @@ import pandas as pd
 from numpy import random as rd
 
 # Initialize network's parameters
-N = 300
+N = 500
 g = 2
 dt = 0.01
 time = np.arange(0,100,dt)
-tau = 0.5
+tau = 0.1
 P0 = 1
 
 # Target functions
@@ -51,26 +51,29 @@ for i in np.arange(0,5):
 ij = g * rd.randn(N, N) / math.sqrt(N)
 ij0 = ij.copy()
 ijs = ij
-errors = np.array([])
+errors = 0
 PJ = P0 * np.eye(N,N) # Initialization of P0 for training
-for runs in np.arange(0,5):
+for runs in np.arange(0,20):
     Rates = np.zeros([N,len(time)])
     current = targets[:,0]
+    run_error = 0
     for t in np.arange(0,len(time)):
         Rates[:,t] = np.tanh(current) # Add rate to traces
         weighted = ij.dot(Rates[:,t])
         current = (-current + weighted)*dt/tau + current # Update rates
         # Training
-        #if t % 200 == 0:
-        err = weighted - targets[:,t] # e(t) = z(t) - f(t)
-        r_slice = Rates[:, t].reshape(N, 1) # Rates of learning neurons at time t
-        k = PJ.dot(r_slice)
-        rPr = r_slice.T.dot(k)[0, 0]
-        c = 1.0/(1.0 + rPr)
-        PJ = PJ - c*(k.dot(k.T)) # P(t) = P(t-1) - ...
-        #ijs = np.dstack([ijs, ij]) # Save IJ Matrix before updating
-        ij = (ij - (c * np.outer(err.flatten(), k.flatten())))
-    errors = np.append(errors,np.mean(err ** 2))
+        if t % 10 == 0:
+            err = weighted - targets[:,t] # e(t) = z(t) - f(t)
+            run_error = run_error + np.mean(err ** 2)
+            r_slice = Rates[:, t].reshape(N, 1) # Rates of learning neurons at time t
+            k = PJ.dot(r_slice)
+            rPr = r_slice.T.dot(k)[0, 0]
+            c = 1.0/(1.0 + rPr)
+            PJ = PJ - c*(k.dot(k.T)) # P(t) = P(t-1) - ...
+            #ijs = np.dstack([ijs, ij]) # Save IJ Matrix before updating
+            ij = (ij - (c * np.outer(err.flatten(), k.flatten())))
+    errors = np.append(errors, run_error)
+    print(runs)
 
 
 # ------------------------------------------------------------------------------
