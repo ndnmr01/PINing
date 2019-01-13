@@ -1,20 +1,15 @@
-%reset
 import math
 import numpy as np
-<<<<<<< HEAD
-import holoviews as hv
-hv.extension('bokeh')
 import matplotlib.pyplot as plt
-import pandas as pd
 from numpy import random as rd
 
 # Initialize network's parameters
-N = 500
-g = 2
+N = 300
+g = 1.5 
 dt = 0.01
 time = np.arange(0,100,dt)
-tau = 0.1
-P0 = 1
+tau = 1.0
+P0 = 1.0
 
 # Target functions
 targets = np.zeros([N, len(time)])
@@ -52,7 +47,7 @@ for i in np.arange(0,5):
 ij = g * rd.randn(N, N) / math.sqrt(N)
 ij0 = ij.copy()
 ijs = ij
-errors = 0
+errors = []
 PJ = P0 * np.eye(N,N) # Initialization of P0 for training
 for runs in np.arange(0,20):
     Rates = np.zeros([N,len(time)])
@@ -73,7 +68,7 @@ for runs in np.arange(0,20):
             PJ = PJ - c*(k.dot(k.T)) # P(t) = P(t-1) - ...
             #ijs = np.dstack([ijs, ij]) # Save IJ Matrix before updating
             ij = (ij - (c * np.outer(err.flatten(), k.flatten())))
-    errors = np.append(errors, run_error)
+    errors.append(run_error)
     print(runs)
 
 
@@ -81,8 +76,8 @@ for runs in np.arange(0,20):
 
 # Plots error across Training
 plt.figure(figsize = (10,5))
-plt.scatter(x = np.arange(0,len(errors)), y = errors, s = 10)
-plt.plot(errors, c = "Salmon", linewidth = 1.2)
+plt.scatter(x = range(1,len(errors) + 1), y = errors, s = 10)
+plt.plot(range(1, len(errors) + 1), errors, c = "Salmon", linewidth = 1.2)
 plt.title("Error across training")
 plt.show()
 
@@ -149,3 +144,4 @@ for i in np.arange(0,5):
     if i == 0:
         plt.title("Red is Trained Network; Blue is Target")
 plt.xlabel("Time (ms)")
+plt.show()
