@@ -64,13 +64,13 @@ for runs in np.arange(0,20):
         if t % 10 == 0:
             err = weighted - targets[:,t] # e(t) = z(t) - f(t)
             run_error = run_error + np.mean(err ** 2)
-            r_slice = Rates[:, t].reshape(N, 1) # Rates of learning neurons at time t
+            r_slice = Rates[:, t] # Rates of learning neurons at time t
             k = PJ @ r_slice
-            rPr = (r_slice.T @ k)[0, 0]
+            rPr = (r_slice @ k)
             c = 1.0/(1.0 + rPr)
-            PJ = PJ - c*(k @ k.T) # P(t) = P(t-1) - ...
+            PJ = PJ - c*(np.outer(k, k)) # P(t) = P(t-1) - ...
             #ijs = np.dstack([ijs, ij]) # Save IJ Matrix before updating
-            ij = (ij - (c * np.outer(err.flatten(), k.flatten())))
+            ij = ij - (c * np.outer(err, k))
     errors.append(run_error)
     print(runs)
 
