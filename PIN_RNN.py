@@ -58,17 +58,17 @@ for runs in np.arange(0,20):
     run_error = 0
     for t in np.arange(0,len(time)):
         Rates[:,t] = np.tanh(current) # Add rate to traces
-        weighted = ij.dot(Rates[:,t])
+        weighted = ij @ Rates[:,t]
         current = (-current + weighted)*dt/tau + current # Update rates
         # Training
         if t % 10 == 0:
             err = weighted - targets[:,t] # e(t) = z(t) - f(t)
             run_error = run_error + np.mean(err ** 2)
             r_slice = Rates[:, t].reshape(N, 1) # Rates of learning neurons at time t
-            k = PJ.dot(r_slice)
-            rPr = r_slice.T.dot(k)[0, 0]
+            k = PJ @ r_slice
+            rPr = (r_slice.T @ k)[0, 0]
             c = 1.0/(1.0 + rPr)
-            PJ = PJ - c*(k.dot(k.T)) # P(t) = P(t-1) - ...
+            PJ = PJ - c*(k @ k.T) # P(t) = P(t-1) - ...
             #ijs = np.dstack([ijs, ij]) # Save IJ Matrix before updating
             ij = (ij - (c * np.outer(err.flatten(), k.flatten())))
     errors.append(run_error)
