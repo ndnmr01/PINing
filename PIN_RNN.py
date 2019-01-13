@@ -1,8 +1,6 @@
 %reset
 import math
 import numpy as np
-import holoviews as hv
-hv.extension('bokeh')
 import matplotlib.pyplot as plt
 import pandas as pd
 from numpy import random as rd
